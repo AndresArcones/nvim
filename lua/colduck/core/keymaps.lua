@@ -55,7 +55,7 @@ keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>") -- list current c
 keymap.set("n", "<leader>rs", ":LspRestart<CR>") -- mapping to restart lsp if necessary
 
 -- fugitive keybindings
-keymap.set("n", "<leader>gs", vim.cmd.Git) -- opens a buffer to execute git commands
+keymap.set("n", "<leader>g", vim.cmd.Git) -- opens a buffer to execute git commands
 
 local colduck = vim.api.nvim_create_augroup("colduck", {})
 
