@@ -6,6 +6,9 @@ local keymap = vim.keymap -- for conciseness
 ---------------------
 -- General Keymaps
 ---------------------
+-- make esc easy again
+keymap.set("i", "jk", "<ESC>")
+keymap.set("c", "jk", "<ESC>")
 
 -- clear search highlights
 keymap.set("n", "<leader>nh", ":nohl<CR>")

@@ -20,6 +20,7 @@ null_ls.setup({
     formatting.prettier, -- js/ts formatter
     formatting.stylua, -- lua formatter
     formatting.gofmt, -- go formatter
+    diagnostics.flake8, -- python linter 
     diagnostics.eslint_d.with({ -- js/ts linter
       -- only enable eslint if root has .eslintrc.js
       condition = function(utils)
