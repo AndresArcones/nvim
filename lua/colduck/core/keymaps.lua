@@ -126,8 +126,8 @@ vim.keymap.set("n", "<leader>zz", function()
 end)
 
 -- navigator
-keymap.set({'n', 't'}, '<A-h>', '<CMD>NavigatorLeft<CR>')
-keymap.set({'n', 't'}, '<A-l>', '<CMD>NavigatorRight<CR>')
-keymap.set({'n', 't'}, '<A-k>', '<CMD>NavigatorUp<CR>')
-keymap.set({'n', 't'}, '<A-j>', '<CMD>NavigatorDown<CR>')
-keymap.set({'n', 't'}, '<A-p>', '<CMD>NavigatorPrevious<CR>')
+keymap.set({'n', 't'}, '<C-h>', '<CMD>NavigatorLeft<CR>')
+keymap.set({'n', 't'}, '<C-l>', '<CMD>NavigatorRight<CR>')
+keymap.set({'n', 't'}, '<C-k>', '<CMD>NavigatorUp<CR>')
+keymap.set({'n', 't'}, '<C-j>', '<CMD>NavigatorDown<CR>')
+keymap.set({'n', 't'}, '<C-p>', '<CMD>NavigatorPrevious<CR>')
