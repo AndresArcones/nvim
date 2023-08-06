@@ -140,6 +140,10 @@ return packer.startup(function(use)
         require('Navigator').setup()
     end
   }
+
+  -- shows recent files/proyects opened when opening nvim
+  use 'mhinz/vim-startify'
+
   if packer_bootstrap then
     require("packer").sync()
   end
