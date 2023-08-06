@@ -142,6 +142,8 @@ return packer.startup(function(use)
   -- shows recent files/proyects opened when opening nvim
   use 'mhinz/vim-startify'
 
+  use 'dstein64/vim-startuptime'
+
   if packer_bootstrap then
     require("packer").sync()
   end
