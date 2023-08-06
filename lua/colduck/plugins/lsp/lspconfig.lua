@@ -114,3 +114,9 @@ lspconfig["pyright"].setup({
   capabilities = capabilities,
   on_attach = on_attach,
 })
+
+-- configure C language server
+lspconfig["clangd"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
