@@ -1,4 +1,4 @@
-require 'nvim-treesitter.install'.compilers = { 'zig' }
+require 'nvim-treesitter.install'.compilers = { 'gcc' }
 
 -- import nvim-treesitter plugin safely
 local status, treesitter = pcall(require, "nvim-treesitter.configs")

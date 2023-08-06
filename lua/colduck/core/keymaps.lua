@@ -6,19 +6,12 @@ local keymap = vim.keymap -- for conciseness
 ---------------------
 -- General Keymaps
 ---------------------
--- make esc easy again
-keymap.set("i", "jk", "<ESC>")
-keymap.set("c", "jk", "<ESC>")
 
 -- clear search highlights
 keymap.set("n", "<leader>nh", ":nohl<CR>")
 
 -- delete single character without copying into register
 keymap.set("n", "x", '"_x')
-
--- increment/decrement numbers
-keymap.set("n", "<leader>+", "<C-a>") -- increment
-keymap.set("n", "<leader>-", "<C-x>") -- decrement
 
 -- window management
 keymap.set("n", "<leader>sv", "<C-w>v") -- split window vertically
@@ -54,11 +47,57 @@ keymap.set("n", "<leader>gfc", "<cmd>Telescope git_bcommits<cr>") -- list git co
 keymap.set("n", "<leader>gb", "<cmd>Telescope git_branches<cr>") -- list git branches (use <cr> to checkout) ["gb" for git branch]
 keymap.set("n", "<leader>gs", "<cmd>Telescope git_status<cr>") -- list current changes per file with diff preview ["gs" for git status]
 
--- restart lsp server
-keymap.set("n", "<leader>rs", ":LspRestart<CR>") -- mapping to restart lsp if necessary
-
 -- fugitive keybindings
 keymap.set("n", "<leader>g", vim.cmd.Git) -- opens a buffer to execute git commands
+
+-- lsp
+keymap.set("n", "<leader>rs", ":LspRestart<CR>") -- mapping to restart lsp if necessary
+keymap.set("n", "gf", "<cmd>Lspsaga lsp_finder<CR>") -- show definition, references
+keymap.set("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>") -- got to declaration
+keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>") -- see definition and make edits in window
+keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>") -- go to implementation
+keymap.set("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>") -- see available code actions
+keymap.set("n", "<leader>rn", "<cmd>Lspsaga rename<CR>") -- smart rename
+keymap.set("n", "<leader>D", "<cmd>Lspsaga show_line_diagnostics<CR>") -- show  diagnostics for line
+keymap.set("n", "<leader>d", "<cmd>Lspsaga show_cursor_diagnostics<CR>") -- show diagnostics for cursor
+keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<CR>") -- jump to previous diagnostic in buffer
+keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<CR>") -- jump to next diagnostic in buffer
+keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>") -- show documentation for what is under cursor
+keymap.set("n", "<leader>o", "<cmd>LSoutlineToggle<CR>") -- see outline on right hand side
+keymap.set("n", "<leader>cl", "<Cmd>lua vim.lsp.codelens.run()<CR>")
+keymap.set("n", "<leader>fr", "<Cmd>lua vim.lsp.buf.format()<CR>")
+
+-- dapui
+keymap.set("n", "<leader>ds", function() require('dapui').toggle() end)
+
+-- dap
+keymap.set("n", "<leader>dc", function()
+  require("dap").continue()
+end)
+
+keymap.set("n", "<leader>dr", function()
+  require("dap").repl.toggle()
+end)
+
+keymap.set("n", "<leader>dK", function()
+  require("dap.ui.widgets").hover()
+end)
+
+keymap.set("n", "<leader>dt", function()
+  require("dap").toggle_breakpoint()
+end)
+
+keymap.set("n", "<leader>do", function()
+  require("dap").step_over()
+end)
+
+keymap.set("n", "<leader>di", function()
+  require("dap").step_into()
+end)
+
+keymap.set("n", "<leader>dl", function()
+  require("dap").run_last()
+end)
 
 local colduck = vim.api.nvim_create_augroup("colduck", {})
 

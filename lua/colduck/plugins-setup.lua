@@ -58,7 +58,6 @@ return packer.startup(function(use)
   use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" }) -- fuzzy finder
 
   -- autocompletion
-  use("hrsh7th/nvim-cmp") -- completion plugin
   use("hrsh7th/cmp-buffer") -- source for text in buffer
   use("hrsh7th/cmp-path") -- source for file system paths
 
@@ -143,6 +142,25 @@ return packer.startup(function(use)
   use 'mhinz/vim-startify'
 
   use 'dstein64/vim-startuptime'
+
+  -- scala lsp
+  use({
+    "hrsh7th/nvim-cmp",
+    requires = {
+      {"hrsh7th/nvim-compe"},
+      { "hrsh7th/cmp-nvim-lsp" },
+      { "hrsh7th/cmp-vsnip" },
+      { "hrsh7th/vim-vsnip" },
+    },
+  })
+  use({
+    "scalameta/nvim-metals",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "mfussenegger/nvim-dap",
+      "rcarriga/nvim-dap-ui"
+    },
+  })
 
   if packer_bootstrap then
     require("packer").sync()
