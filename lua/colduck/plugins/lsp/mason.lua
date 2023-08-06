@@ -28,7 +28,7 @@ mason_lspconfig.setup({
     "tailwindcss",
     "lua_ls",
     "emmet_ls",
-    "jedi_language_server",
+    "pyright",
     "clangd",
   },
   -- auto-install configured servers (with lspconfig)
