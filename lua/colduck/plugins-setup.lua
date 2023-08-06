@@ -133,6 +133,13 @@ return packer.startup(function(use)
   -- some ASCII fun!
   use("eandrju/cellular-automaton.nvim")
 
+  -- navigate on between tabs in wezterm and tmux
+  use {
+    'numToStr/Navigator.nvim',
+    config = function()
+        require('Navigator').setup()
+    end
+  }
   if packer_bootstrap then
     require("packer").sync()
   end
