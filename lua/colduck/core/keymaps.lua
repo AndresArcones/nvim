@@ -124,3 +124,10 @@ vim.keymap.set("n", "<leader>zz", function()
   require("zen-mode").toggle()
   vim.wo.wrap = false
 end)
+
+-- navigator
+keymap.set({'n', 't'}, '<A-h>', '<CMD>NavigatorLeft<CR>')
+keymap.set({'n', 't'}, '<A-l>', '<CMD>NavigatorRight<CR>')
+keymap.set({'n', 't'}, '<A-k>', '<CMD>NavigatorUp<CR>')
+keymap.set({'n', 't'}, '<A-j>', '<CMD>NavigatorDown<CR>')
+keymap.set({'n', 't'}, '<A-p>', '<CMD>NavigatorPrevious<CR>')
