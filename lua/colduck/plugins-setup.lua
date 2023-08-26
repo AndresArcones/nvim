@@ -161,6 +161,7 @@ return packer.startup(function(use)
       "rcarriga/nvim-dap-ui"
     },
   })
+  use 'junegunn/gv.vim'
 
   if packer_bootstrap then
     require("packer").sync()

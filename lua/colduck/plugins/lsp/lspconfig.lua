@@ -134,3 +134,9 @@ lspconfig["bashls"].setup({
   capabilities = capabilities,
   on_attach = on_attach,
 })
+
+-- configure terraform language server
+lspconfig["terraformls"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
