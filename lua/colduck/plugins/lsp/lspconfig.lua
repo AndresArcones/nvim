@@ -139,4 +139,11 @@ lspconfig["bashls"].setup({
 lspconfig["terraformls"].setup({
   capabilities = capabilities,
   on_attach = on_attach,
+  filetypes = { "terraform", "hcl" }, -- attach also on terragrunt (.hcl) buffers
+})
+
+-- configure terraform language server
+lspconfig["yamlls"].setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
 })
