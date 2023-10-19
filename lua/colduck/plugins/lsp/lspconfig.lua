@@ -147,3 +147,9 @@ lspconfig["yamlls"].setup({
   capabilities = capabilities,
   on_attach = on_attach,
 })
+
+-- -- configure terraform language server
+-- lspconfig["spectral"].setup({
+--   capabilities = capabilities,
+--   on_attach = on_attach,
+-- })
