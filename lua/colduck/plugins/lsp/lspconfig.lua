@@ -80,34 +80,36 @@ local lsp_configs = {
     filetypes = { "terraform", "hcl" },
   },
   yamlls = { capabilities = capabilities, on_attach = on_attach },
-}
-
--- Configure all LSP servers
-for server_name, config in pairs(lsp_configs) do
-  vim.lsp.config(server_name, config)
-  vim.lsp.enable(server_name)
-end
-
--- Configure TypeScript using vim.lsp.config
-vim.lsp.config("ts_ls", {
-  capabilities = capabilities,
-  on_attach = on_attach,
-  settings = {
-    typescript = {
-      preferences = {
-        includeCompletionsForModuleExports = true,
-        includeCompletionsWithInsertText = true,
+  tsserver = {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = {
+      typescript = {
+        preferences = {
+          includeCompletionsForModuleExports = true,
+          includeCompletionsWithInsertText = true,
+        },
       },
-    },
-    javascript = {
-      preferences = {
-        includeCompletionsForModuleExports = true,
-        includeCompletionsWithInsertText = true,
+      javascript = {
+        preferences = {
+          includeCompletionsForModuleExports = true,
+          includeCompletionsWithInsertText = true,
+        },
       },
     },
   },
-})
-vim.lsp.enable("ts_ls")
+}
+
+-- Configure all LSP servers with error handling
+for server_name, config in pairs(lsp_configs) do
+  local ok, err = pcall(function()
+    vim.lsp.config(server_name, config)
+    vim.lsp.enable(server_name)
+  end)
+  if not ok then
+    vim.notify("Failed to configure " .. server_name .. ": " .. err, vim.log.levels.ERROR)
+  end
+end
 
 -- Uncomment to enable spectral language server
 -- lspconfig["spectral"].setup({
