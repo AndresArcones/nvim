@@ -175,3 +175,8 @@ keymap.set({ 'n', 't' }, '<C-h>', '<CMD>NavigatorLeft<CR>')
 keymap.set({ 'n', 't' }, '<C-l>', '<CMD>NavigatorRight<CR>')
 keymap.set({ 'n', 't' }, '<C-k>', '<CMD>NavigatorUp<CR>')
 keymap.set({ 'n', 't' }, '<C-j>', '<CMD>NavigatorDown<CR>')
+
+-- neotest
+keymap.set("n", "<leader>t", ":Neotest run<CR>", { desc = "Run nearest test" })
+keymap.set("n", "<leader>T", ":Neotest run file<CR>", { desc = "Run all tests in file" })
+keymap.set("n", "<leader>s", ":Neotest summary<CR>", { desc = "Show test summary" })

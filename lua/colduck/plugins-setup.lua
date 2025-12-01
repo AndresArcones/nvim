@@ -98,6 +98,24 @@ local plugins = {
   },
   { "nvim-neotest/nvim-nio" },
 
+-- Testing
+  {
+    "nvim-neotest/neotest",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim",
+    },
+    config = function()
+      require("neotest").setup({
+        adapters = {},
+        status = { virtual_text = true },
+        output = { open_on_run = true },
+        run_mode = "vim",
+      })
+    end,
+  },
+
   -- Wakatime
   { "wakatime/vim-wakatime" },
 
