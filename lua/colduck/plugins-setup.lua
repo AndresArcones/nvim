@@ -1,172 +1,136 @@
--- auto install packer if not installed
-local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-    vim.cmd([[packadd packer.nvim]])
-    return true
-  end
-  return false
+-- auto install lazy.nvim if not installed
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
 end
-local packer_bootstrap = ensure_packer() -- true if packer was just installed
+vim.opt.rtp:prepend(lazypath)
 
--- autocommand that reloads neovim and installs/updates/removes plugins
--- when file is saved
-vim.cmd([[ 
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins-setup.lua source <afile> | PackerSync
-  augroup end
-]])
+-- plugin specs
+local plugins = {
+  -- UI and visuals
+  { "bluz71/vim-nightfly-guicolors" },
+  { "nvim-tree/nvim-web-devicons" },
+  { "nvim-tree/nvim-tree.lua" },
+  { "nvim-lualine/lualine.nvim" },
+  { "rose-pine/neovim", name = "rose-pine" },
 
--- import packer safely
-local status, packer = pcall(require, "packer")
-if not status then
-  return
-end
+  -- Editing
+  { "szw/vim-maximizer" },
+  { "tpope/vim-surround" },
+  { "inkarkat/vim-ReplaceWithRegister" },
+  { "numToStr/Comment.nvim" },
+  { "windwp/nvim-autopairs" },
+  { "windwp/nvim-ts-autotag", dependencies = { "nvim-treesitter/nvim-treesitter" } },
+  { "theprimeagen/harpoon" },
+  { "mbbill/undotree" },
+  { "folke/zen-mode.nvim" },
+  { "eandrju/cellular-automaton.nvim" },
+  { "mhinz/vim-startify" },
+  { "dstein64/vim-startuptime" },
+  { "junegunn/gv.vim" },
+  { "lewis6991/gitsigns.nvim" },
 
--- add list of plugins to install
-return packer.startup(function(use)
-  -- packer can manage itself
-  use("wbthomason/packer.nvim")
+  -- Telescope
+  { "nvim-lua/plenary.nvim" },
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+  { "nvim-telescope/telescope.nvim", branch = "0.1.x" },
 
-  use("nvim-lua/plenary.nvim") -- lua functions that many plugins use
-
-  use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
-
-  use("szw/vim-maximizer") -- maximizes and restores current window
-
-  -- essential plugins
-  use("tpope/vim-surround") -- add, delete, change surroundings
-  use("inkarkat/vim-ReplaceWithRegister") -- replace with register contents using motion (gr + motion)
-
-  -- commenting with gc
-  use("numToStr/Comment.nvim")
-
-  -- file explorer
-  use("nvim-tree/nvim-tree.lua")
-
-  -- vs-code like icons
-  use("nvim-tree/nvim-web-devicons")
-
-  -- statusline
-  use("nvim-lualine/lualine.nvim")
-
-  -- fuzzy finding w/ telescope
-  use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
-  use({ "nvim-telescope/telescope.nvim", branch = "0.1.x" }) -- fuzzy finder
-
-  -- autocompletion
-  use("hrsh7th/cmp-buffer") -- source for text in buffer
-  use("hrsh7th/cmp-path") -- source for file system paths
-
-  -- snippets
-  use("L3MON4D3/LuaSnip") -- snippet engine
-  use("saadparwaiz1/cmp_luasnip") -- for autocompletion
-  use("rafamadriz/friendly-snippets") -- useful snippets
-
-  -- managing & installing lsp servers, linters & formatters
-  use("williamboman/mason.nvim") -- in charge of managing lsp servers, linters & formatters
-  use("williamboman/mason-lspconfig.nvim") -- bridges gap b/w mason & lspconfig
-
-  -- configuring lsp servers
-  use("neovim/nvim-lspconfig") -- easily configure language servers
-  use("hrsh7th/cmp-nvim-lsp") -- for autocompletion
-  use({ "glepnir/lspsaga.nvim", branch = "main" }) -- enhanced lsp uis
-  use("jose-elias-alvarez/typescript.nvim") -- additional functionality for typescript server (e.g. rename file & update imports)
-  use("onsails/lspkind.nvim") -- vs-code like icons for autocompletion
-
-  -- formatting & linting
-  use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
-  use("jayp0521/mason-null-ls.nvim") -- bridges gap b/w mason & null-ls
-
-  -- wakatime: telemetry for developers
-  use 'wakatime/vim-wakatime'
-
-  -- treesitter configuration
-  use({
+  -- Treesitter
+  {
     "nvim-treesitter/nvim-treesitter",
-    run = function()
-      local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
-      ts_update()
+    build = function()
+      require("nvim-treesitter.install").update({ with_sync = true })()
     end,
-  })
+  },
+  { "nvim-treesitter/playground" },
 
-  -- auto closing
-  use("windwp/nvim-autopairs") -- autoclose parens, brackets, quotes, etc...
-  use({ "windwp/nvim-ts-autotag", after = "nvim-treesitter" }) -- autoclose tags
-
-  -- git integration
-  use("lewis6991/gitsigns.nvim") -- show line modifications on left hand side
-
-  -- markdown visualizer -> :MarkdownPreview
-  use({
-    "iamcco/markdown-preview.nvim",
-    run = "cd app && npm install",
-    setup = function()
-      vim.g.mkdp_filetypes = { "markdown" }
-    end,
-    ft = { "markdown" },
-  })
-
-  -- another theme
-  use({
-    "rose-pine/neovim", -- to activete these theme -> :colorscheme rose-pine
-    as = "rose-pine",
-  })
-  -- git commands
-  use("tpope/vim-fugitive")
-
-  -- Anchors files to jump to them quickly
-  use("theprimeagen/harpoon")
-
-  -- Allows to use the treesitter api (very good for automation)
-  use("nvim-treesitter/playground")
-
-  -- mantains a tree of the changes made to the file
-  use("mbbill/undotree")
-
-  -- full concentration mode
-  use("folke/zen-mode.nvim")
-
-  -- some ASCII fun!
-  use("eandrju/cellular-automaton.nvim")
-
-  -- navigate on between tabs in wezterm and tmux
-  use {
-    'numToStr/Navigator.nvim',
-    config = function()
-        require('Navigator').setup()
-    end
-  }
-
-  -- shows recent files/proyects opened when opening nvim
-  use 'mhinz/vim-startify'
-
-  use 'dstein64/vim-startuptime'
-
-  -- scala lsp
-  use({
+  -- Completion
+  {
     "hrsh7th/nvim-cmp",
-    requires = {
-      {"hrsh7th/nvim-compe"},
-      { "hrsh7th/cmp-nvim-lsp" },
-      { "hrsh7th/cmp-vsnip" },
-      { "hrsh7th/vim-vsnip" },
+    dependencies = {
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-nvim-lsp",
+      "L3MON4D3/LuaSnip",
+      "saadparwaiz1/cmp_luasnip",
+      "rafamadriz/friendly-snippets",
     },
-  })
-  use({
+  },
+
+  -- Snippets (optional, lazy loaded)
+  { "hrsh7th/vim-vsnip", lazy = true },
+  { "hrsh7th/cmp-vsnip", lazy = true },
+
+  -- LSP
+  { "neovim/nvim-lspconfig" },
+  { "williamboman/mason.nvim" },
+  { "williamboman/mason-lspconfig.nvim" },
+  { "onsails/lspkind.nvim" },
+  { "glepnir/lspsaga.nvim", branch = "main" },
+  { "jose-elias-alvarez/typescript.nvim" },
+
+  -- none-ls replacement (null-ls successor)
+  {
+    "nvimtools/none-ls.nvim",
+    dependencies = { "nvim-lua/plenary.nvim", "nvim-lspconfig" },
+  },
+  {
+    "jayp0521/mason-null-ls.nvim",
+    dependencies = { "nvimtools/none-ls.nvim" },
+  },
+
+  -- Scala + DAP
+  {
     "scalameta/nvim-metals",
-    requires = {
+    dependencies = {
       "nvim-lua/plenary.nvim",
       "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui"
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio",
     },
-  })
-  use 'junegunn/gv.vim'
+  },
+  { "nvim-neotest/nvim-nio" },
 
-  if packer_bootstrap then
-    require("packer").sync()
-  end
-end)
+  -- Wakatime
+  { "wakatime/vim-wakatime" },
+
+  -- Navigation
+  {
+    "numToStr/Navigator.nvim",
+    config = function()
+      require("Navigator").setup()
+    end,
+  },
+
+  -- Markdown preview
+  {
+    "iamcco/markdown-preview.nvim",
+    build = "cd app && npm install",
+    ft = { "markdown" },
+    config = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+    end,
+  },
+}
+
+-- Setup lazy.nvim with plugins
+require("lazy").setup(plugins, {
+  dev = {
+    path = "~/projects",
+    patterns = {},
+    fallback = false,
+  },
+  ui = {
+    border = "rounded",
+  },
+  performance = {
+    cache = { enabled = true },
+  },
+})

@@ -5,6 +5,9 @@ if not saga_status then
 end
 
 saga.setup({
+lightbulb = {
+    enable = false,
+  },
   definition = {
     keys = {
       edit = "<CR>", -- use enter to open file with definition preview

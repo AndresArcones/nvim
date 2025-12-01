@@ -1,3 +1,15 @@
+-- Block multi-line startup warnings (like the tsserver deprecation)
+local original_err = vim.api.nvim_err_writeln
+vim.api.nvim_err_writeln = function(msg)
+  if msg:match("tsserver is deprecated") then
+    return -- swallow only this specific annoying warning
+  end
+  return original_err(msg)
+end
+
+-- Prevent Neovim from pausing for ANY message
+vim.opt.shortmess:append("atT")
+vim.opt.cmdheight = 1
 require("colduck.plugins-setup")
 require("colduck.core.options")
 require("colduck.core.keymaps")

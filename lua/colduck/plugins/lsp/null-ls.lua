@@ -1,5 +1,5 @@
--- import null-ls plugin safely
-local setup, null_ls = pcall(require, "null-ls")
+-- import none-ls plugin safely
+local setup, null_ls = pcall(require, "none-ls")
 if not setup then
   return
 end
@@ -11,24 +11,23 @@ local diagnostics = null_ls.builtins.diagnostics -- to setup linters
 -- to setup format on save
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
--- configure null_ls
+-- configure none-ls
 null_ls.setup({
-  -- setup formatters & linters
   sources = {
-    --  to disable file types use
-    --  "formatting.prettier.with({disabled_filetypes: {}})" (see null-ls docs)
-    -- formatting.prettier, -- js/ts formatter
-    formatting.stylua, -- lua formatter
-    formatting.gofmt, -- go formatter
-    diagnostics.flake8, -- python linter 
-    diagnostics.eslint_d.with({ -- js/ts linter
-      -- only enable eslint if root has .eslintrc.js
+    -- formatters
+    formatting.stylua, -- Lua
+    formatting.gofmt,  -- Go
+
+    -- linters
+    diagnostics.flake8, -- Python
+    diagnostics.eslint.with({ -- JS/TS linter
       condition = function(utils)
-        return utils.root_has_file(".eslintrc.js") -- change file extension if you use something else
+        return utils.root_has_file(".eslintrc.js") or utils.root_has_file(".eslintrc.json")
       end,
     }),
   },
-  -- configure format on save
+
+  -- format on save
   on_attach = function(current_client, bufnr)
     if current_client.supports_method("textDocument/formatting") then
       vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
@@ -38,8 +37,8 @@ null_ls.setup({
         callback = function()
           vim.lsp.buf.format({
             filter = function(client)
-              --  only use null-ls for formatting instead of lsp server
-              return client.name == "null-ls"
+              -- only use none-ls for formatting
+              return client.name == "null-ls" -- still called "null-ls" internally
             end,
             bufnr = bufnr,
           })
