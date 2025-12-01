@@ -1,20 +1,10 @@
--- import lspconfig plugin safely
-local lspconfig_status, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status then
-  return
-end
-
 -- import cmp-nvim-lsp plugin safely
 local cmp_nvim_lsp_status, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if not cmp_nvim_lsp_status then
   return
 end
 
--- import typescript plugin safely
-local typescript_setup, typescript = pcall(require, "typescript")
-if not typescript_setup then
-  return
-end
+
 
 local keymap = vim.keymap -- for conciseness
 
@@ -54,55 +44,70 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
--- servers setup --
+-- servers setup using vim.lsp.config
 
-lspconfig["html"].setup({ capabilities = capabilities, on_attach = on_attach })
-
-typescript.setup({
-  server = {
+local lsp_configs = {
+  html = { capabilities = capabilities, on_attach = on_attach },
+  cssls = { capabilities = capabilities, on_attach = on_attach },
+  tailwindcss = { capabilities = capabilities, on_attach = on_attach },
+  emmet_ls = {
     capabilities = capabilities,
     on_attach = on_attach,
+    filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
   },
-})
-
-lspconfig["cssls"].setup({ capabilities = capabilities, on_attach = on_attach })
-
-lspconfig["tailwindcss"].setup({ capabilities = capabilities, on_attach = on_attach })
-
-lspconfig["emmet_ls"].setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-  filetypes = { "html", "typescriptreact", "javascriptreact", "css", "sass", "scss", "less", "svelte" },
-})
-
-lspconfig["lua_ls"].setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-  settings = {
-    Lua = {
-      diagnostics = { globals = { "vim" } },
-      workspace = {
-        library = {
-          [vim.fn.expand("$VIMRUNTIME/lua")] = true,
-          [vim.fn.stdpath("config") .. "/lua"] = true,
+  lua_ls = {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = {
+      Lua = {
+        diagnostics = { globals = { "vim" } },
+        workspace = {
+          library = {
+            [vim.fn.expand("$VIMRUNTIME/lua")] = true,
+            [vim.fn.stdpath("config") .. "/lua"] = true,
+          },
         },
       },
     },
   },
-})
+  pyright = { capabilities = capabilities, on_attach = on_attach },
+  clangd = { capabilities = capabilities, on_attach = on_attach },
+  gopls = { capabilities = capabilities, on_attach = on_attach },
+  bashls = { capabilities = capabilities, on_attach = on_attach },
+  terraformls = {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    filetypes = { "terraform", "hcl" },
+  },
+  yamlls = { capabilities = capabilities, on_attach = on_attach },
+}
 
-lspconfig["pyright"].setup({ capabilities = capabilities, on_attach = on_attach })
-lspconfig["clangd"].setup({ capabilities = capabilities, on_attach = on_attach })
-lspconfig["gopls"].setup({ capabilities = capabilities, on_attach = on_attach })
-lspconfig["bashls"].setup({ capabilities = capabilities, on_attach = on_attach })
+-- Configure all LSP servers
+for server_name, config in pairs(lsp_configs) do
+  vim.lsp.config(server_name, config)
+  vim.lsp.enable(server_name)
+end
 
-lspconfig["terraformls"].setup({
+-- Configure TypeScript using vim.lsp.config
+vim.lsp.config("ts_ls", {
   capabilities = capabilities,
   on_attach = on_attach,
-  filetypes = { "terraform", "hcl" },
+  settings = {
+    typescript = {
+      preferences = {
+        includeCompletionsForModuleExports = true,
+        includeCompletionsWithInsertText = true,
+      },
+    },
+    javascript = {
+      preferences = {
+        includeCompletionsForModuleExports = true,
+        includeCompletionsWithInsertText = true,
+      },
+    },
+  },
 })
-
-lspconfig["yamlls"].setup({ capabilities = capabilities, on_attach = on_attach })
+vim.lsp.enable("ts_ls")
 
 -- Uncomment to enable spectral language server
 -- lspconfig["spectral"].setup({
